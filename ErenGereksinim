@@ -1,1 +1,12 @@
-
+Eren Altuncu Gereksinimler: 
+1) Biletleri Görüntüleme : Kullanıcının satın aldığı aktif biletlere erişimini ve bu biletlerle ilgili işlem yapmasını sağlayacak sayfaya yönlendirir.
+2) Bilet İade : Satın alınan biletin, havayolu firmasının belirlediği süre şartı dahilinde talep edilmesi durumunda;
+firmaya iade işlemlerinin yapılacağı sayfayı sunar.
+3) Dil Değiştirme : Websitenin arayüzünün görüntüleneceği dili seçmeyi sağlar.
+4) Fiyata Göre Sıralama : Biletleri, satış fiyatlarına göre ucuzdan pahalıya veya pahalıdan ucuza listeler.
+5) Bileti Açığa Al : Kullanıcının satın aldığı bileti, açık bilete dönüştürerek uçuş rezervasyonunu iptal etmesini sağlar. 
+Bu işlem sonucunda, açığa alınan bilet; firmanın belirlediği tarihler arasında biletin kayıt kodu(PNR) ile 
+yeni bir bilet satın alma işleminde varsa fiyat farkı alınarak kullanılabilir hale gelir.
+6) Geçmiş Uçuşlar : Daha önceden gerçekleşmiş olan uçuşların bilgilerinin görüntüleneceği sayfaya erişimi sağlar.
+7) Şifremi Unuttum : Kullanıcı şifresini unutursa ona SMS veya e-mail yoluyla bir aktivasyon bağlantısı göndererek şifresini yenilemesini sağlanır.
+8) Arama : Kullanıcının rota, tarih, kişi sayısı seçerek rotaları görüntülemesini sağlayan gereksinimdir. Bu gereksinim kullanıcının istekleri doğrultusunda en uygun bileti bulmasını sağlar.
