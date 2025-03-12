@@ -15,7 +15,7 @@
 
 
 
-### [2.Gereksinim Analizi]()
+### [2.Gereksinim Analizi](Gereksinim-Analizi.md)
 
 ### [3.Durum Diyagramı]()
 
