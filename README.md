@@ -15,14 +15,14 @@
 
 
 
-### [2.Gereksinim Analizi](Gereksinim-Analizi.md)
+### [1.Gereksinim Analizi](Gereksinim-Analizi.md)
 
-### [3.Durum Diyagramı]()
+### [2.Durum Diyagramı]()
 
-### [4.Durum Senaryoları]()
+### [3.Durum Senaryoları]()
 
-### [5.Front-End]()
+### [4.Front-End]()
 
-### [6.Back-End]()
+### [5.Back-End]()
 
-### [7.Video Sunum](dokümantasyon.md)
+### [6.Video Sunum](dokümantasyon.md)
