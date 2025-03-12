@@ -1,0 +1,9 @@
+1. Kayıt Ol : Kullanıcının sisteme kullanıcı adı ve şifre belirleyerek, sistemde kullanıcılara açık her işlemi kayıtlar altında kullanması için yapması gereken işlem.
+2. Giriş Yap : Daha önceden belirlenen kullanıcı adı ve şifre ile sisteme giriş yapılan alan, çift kimlik doğrulaması istenilebilir(telefon veya mail kanalı ile).
+3. Çıkış Yap : Kullanıcının oluşturduğu hesaptan çıkış yaparak hiç girilmemiş anasayfaya yönlendirilmeyi sağlar. Güvenlik için önemlidir kullanıcının hesabı sürekli açık kalamaz.
+4. Favori Ekleme : Kullanıcının giriş yaptığı hesapta ayrı bir listeye kullanıcının isteği doğrultusunda belirlenen hizmetleri liste şeklinde aktarmaya yarar.
+5. Rezervasyon Yapma : Kullanıcının yararlanmak istediği hizmet için bir önkayıt oluşturur ve belirlenen kotadan veritabanı aracılığı ile sayı düşürülür.
+6. Yolcu Bilgisi Ekleme : Kullanıcı bir hizmetten yararlanmak istediğinde hizmet gereği yolcunun kişisel bilgilerinin eklendiği bölüm(tc kimlik no, ad, soyad, doğum tarihi,vb.).
+7.Favorileri Görüntüleme : Kullanıcının site içerisinde favorilerine eklediği yolculuk planı veya planlarını  görüntüleyip onları bir liste halinde
+kullanıcıya sunmaya yarayan gereksinimdir.
+8.Favoriden Çıkarma : Kullanıcının favori listesinde mevcut olan bir yolculuk planı veya planlarını listeden çıkarmaya yarayan gereksinimdir
