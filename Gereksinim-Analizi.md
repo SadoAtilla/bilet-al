@@ -12,5 +12,5 @@
 
 ## Gereksinim Dağılımları
 
-### [1. Eren Altuncu Gereksinimler]()
+### [1. Eren Altuncu Gereksinimler](/ErenGereksinim)
 ### [2. Sadık Atilla Gereksinimler](/SadıkGereksinim)
