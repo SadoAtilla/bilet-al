@@ -17,9 +17,9 @@
 
 ### [1.Gereksinim Analizi](Gereksinim-Analizi.md)
 
-### [2.Durum Diyagramı]()
+### [2.Durum Diyagramı](biletal-kullanıcı-diyagramı.jpeg)
 
-### [3.Durum Senaryoları]()
+### [3.Durum Senaryoları](Durum-Senaryoları.md)
 
 ### [4.Front-End]()
 
