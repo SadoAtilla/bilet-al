@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geçmiş Uçuşlarım - BiletAl</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Geçmiş Uçuşlar sayfası için özel stiller */
+        .flight-history-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .flight-history-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .flight-history-header {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .flight-history-body {
+            padding: 20px;
+        }
+        
+        .flight-history-footer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .flight-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .flight-time {
+            text-align: center;
+        }
+        
+        .flight-path {
+            flex-grow: 1;
+            position: relative;
+            margin: 0 20px;
+        }
+        
+        .flight-path::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #dee2e6;
+            z-index: 1;
+        }
+        
+        .flight-path::after {
+            content: '\f072';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            color: #28a745;
+            padding: 0 10px;
+            z-index: 2;
+        }
+        
+        .flight-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-delayed {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .flight-actions .btn {
+            margin-left: 10px;
+        }
+        
+        .flight-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .flight-details .row {
+            margin-bottom: 10px;
+        }
+        
+        .flight-details .col-md-6 {
+            margin-bottom: 10px;
+        }
+        
+        .flight-details label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .flight-details p {
+            margin-bottom: 0;
+        }
+        
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .empty-flights {
+            text-align: center;
+            padding: 50px 0;
+        }
+        
+        .empty-flights i {
+            font-size: 5rem;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+        
+        .empty-flights h3 {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .empty-flights p {
+            color: #6c757d;
+            margin-bottom: 25px;
+        }
+        
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        
+        .flight-review {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .flight-review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .flight-review-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .flight-review-content {
+            font-style: italic;
+        }
+        
+        .flight-review-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .flight-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #28a745;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER BÖLÜMÜ -->
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="main.html">BiletAl</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="main.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="favorites.html"><i class="far fa-heart"></i> Favoriler</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="tickets.html"><i class="fas fa-ticket-alt"></i> Biletlerim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="past-flights.html"><i class="fas fa-history"></i> Geçmiş Uçuşlarım</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Profilim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ANA İÇERİK -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Geçmiş Uçuşlarım</h1>
+                
+                <!-- Filtre Bölümü -->
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="yearFilter" class="form-label">Yıl</label>
+                            <select class="form-select" id="yearFilter">
+                                <option value="all" selected>Tümü</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="monthFilter" class="form-label">Ay</label>
+                            <select class="form-select" id="monthFilter">
+                                <option value="all" selected>Tümü</option>
+                                <option value="1">Ocak</option>
+                                <option value="2">Şubat</option>
+                                <option value="3">Mart</option>
+                                <option value="4">Nisan</option>
+                                <option value="5">Mayıs</option>
+                                <option value="6">Haziran</option>
+                                <option value="7">Temmuz</option>
+                                <option value="8">Ağustos</option>
+                                <option value="9">Eylül</option>
+                                <option value="10">Ekim</option>
+                                <option value="11">Kasım</option>
+                                <option value="12">Aralık</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="statusFilter" class="form-label">Durum</label>
+                            <select class="form-select" id="statusFilter">
+                                <option value="all" selected>Tümü</option>
+                                <option value="completed">Tamamlandı</option>
+                                <option value="delayed">Gecikmeli</option>
+                                <option value="cancelled">İptal Edildi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="searchFlight" class="form-label">Uçuş Ara</label>
+                            <input type="text" class="form-control" id="searchFlight" placeholder="PNR veya uçuş numarası">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Uçuş İstatistikleri -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Toplam Uçuş</h5>
+                                <p class="card-text display-6">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Toplam Mesafe</h5>
+                                <p class="card-text display-6">15,240 km</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Ortalama Puan</h5>
+                                <p class="card-text display-6">4.5</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">En Sık Uçuş</h5>
+                                <p class="card-text display-6">İstanbul - Antalya</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Uçuş Listesi -->
+                <div id="flightsList">
+                    <!-- Örnek Uçuş 1 -->
+                    <div class="flight-history-card">
+                        <div class="flight-history-header">
+                            <div>
+                                <h5 class="mb-0">PNR: ABC123</h5>
+                                <small>Uçuş Tarihi: 15.06.2023</small>
+                            </div>
+                            <span class="flight-status status-completed">Tamamlandı</span>
+                        </div>
+                        <div class="flight-history-body">
+                            <div class="flight-info">
+                                <div class="flight-time">
+                                    <h5>10:30</h5>
+                                    <p>İstanbul (IST)</p>
+                                    <small>15.06.2023</small>
+                                </div>
+                                <div class="flight-path">
+                                    <div class="d-flex justify-content-between">
+                                        <small>1s 45d</small>
+                                        <small>Direkt Uçuş</small>
+                                    </div>
+                                </div>
+                                <div class="flight-time">
+                                    <h5>12:15</h5>
+                                    <p>Antalya (AYT)</p>
+                                    <small>15.06.2023</small>
+                                </div>
+                            </div>
+                            
+                            <div class="flight-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Yolcu:</label>
+                                        <p>Sadık Atilla</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Uçuş No:</label>
+                                        <p>TK1234</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Sınıf:</label>
+                                        <p>Ekonomi</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Koltuk:</label>
+                                        <p>12A</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flight-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">4.8</div>
+                                    <div class="stat-label">Puan</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">1,050 km</div>
+                                    <div class="stat-label">Mesafe</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">0 dk</div>
+                                    <div class="stat-label">Gecikme</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flight-review">
+                                <div class="flight-review-header">
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <div class="flight-review-date">16.06.2023</div>
+                                </div>
+                                <div class="flight-review-content">
+                                    "Uçuş zamanında gerçekleşti, personel çok ilgiliydi. Yemek servisi biraz geç yapıldı ama genel olarak memnun kaldım."
+                                </div>
+                                <div class="flight-review-footer">
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editReviewModal">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flight-history-footer">
+                            <div>
+                                <span class="fw-bold">Toplam: 450 TL</span>
+                            </div>
+                            <div class="flight-actions">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#flightDetailsModal">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </button>
+                                <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#addReviewModal">
+                                    <i class="fas fa-star"></i> Değerlendir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Örnek Uçuş 2 -->
+                    <div class="flight-history-card">
+                        <div class="flight-history-header">
+                            <div>
+                                <h5 class="mb-0">PNR: XYZ789</h5>
+                                <small>Uçuş Tarihi: 20.06.2023</small>
+                            </div>
+                            <span class="flight-status status-delayed">Gecikmeli</span>
+                        </div>
+                        <div class="flight-history-body">
+                            <div class="flight-info">
+                                <div class="flight-time">
+                                    <h5>14:45</h5>
+                                    <p>İstanbul (IST)</p>
+                                    <small>20.06.2023</small>
+                                </div>
+                                <div class="flight-path">
+                                    <div class="d-flex justify-content-between">
+                                        <small>3s 20d</small>
+                                        <small>1 Durak</small>
+                                    </div>
+                                </div>
+                                <div class="flight-time">
+                                    <h5>18:05</h5>
+                                    <p>Londra (LHR)</p>
+                                    <small>20.06.2023</small>
+                                </div>
+                            </div>
+                            
+                            <div class="flight-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Yolcu:</label>
+                                        <p>Eren Altuncu </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Uçuş No:</label>
+                                        <p>TK1980</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Sınıf:</label>
+                                        <p>Business</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Koltuk:</label>
+                                        <p>5C</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle"></i> Uçuş 45 dakika gecikmeli kalkış yapmıştır.
+                            </div>
+                            
+                            <div class="flight-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">3.5</div>
+                                    <div class="stat-label">Puan</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">3,500 km</div>
+                                    <div class="stat-label">Mesafe</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">45 dk</div>
+                                    <div class="stat-label">Gecikme</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flight-review">
+                                <div class="flight-review-header">
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <div class="flight-review-date">21.06.2023</div>
+                                </div>
+                                <div class="flight-review-content">
+                                    "Uçuş gecikmeli başladı ve bu durum hakkında yeterli bilgilendirme yapılmadı. Business sınıfı hizmeti iyiydi."
+                                </div>
+                                <div class="flight-review-footer">
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editReviewModal">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flight-history-footer">
+                            <div>
+                                <span class="fw-bold">Toplam: 1250 TL</span>
+                            </div>
+                            <div class="flight-actions">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#flightDetailsModal">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Örnek Uçuş 3 -->
+                    <div class="flight-history-card">
+                        <div class="flight-history-header">
+                            <div>
+                                <h5 class="mb-0">PNR: DEF456</h5>
+                                <small>Uçuş Tarihi: 12.06.2023</small>
+                            </div>
+                            <span class="flight-status status-cancelled">İptal Edildi</span>
+                        </div>
+                        <div class="flight-history-body">
+                            <div class="flight-info">
+                                <div class="flight-time">
+                                    <h5>09:15</h5>
+                                    <p>İstanbul (IST)</p>
+                                    <small>12.06.2023</small>
+                                </div>
+                                <div class="flight-path">
+                                    <div class="d-flex justify-content-between">
+                                        <small>1s 30d</small>
+                                        <small>Direkt Uçuş</small>
+                                    </div>
+                                </div>
+                                <div class="flight-time">
+                                    <h5>10:45</h5>
+                                    <p>İzmir (ADB)</p>
+                                    <small>12.06.2023</small>
+                                </div>
+                            </div>
+                            
+                            <div class="flight-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Yolcu:</label>
+                                        <p>Toygar Güneş</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Uçuş No:</label>
+                                        <p>TK2345</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Sınıf:</label>
+                                        <p>Ekonomi</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Koltuk:</label>
+                                        <p>18B</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-danger mt-3">
+                                <i class="fas fa-exclamation-circle"></i> Bu uçuş 11.06.2023 tarihinde iptal edilmiştir. İade işlemi 3-5 iş günü içinde tamamlanmıştır.
+                            </div>
+                            
+                            <div class="flight-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">-</div>
+                                    <div class="stat-label">Puan</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">325 km</div>
+                                    <div class="stat-label">Mesafe</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">-</div>
+                                    <div class="stat-label">Gecikme</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flight-history-footer">
+                            <div>
+                                <span class="fw-bold">Toplam: 350 TL</span>
+                            </div>
+                            <div class="flight-actions">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#flightDetailsModal">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Boş Uçuş Durumu (Gizli) -->
+                <div id="emptyFlights" class="empty-flights" style="display: none;">
+                    <i class="fas fa-plane"></i>
+                    <h3>Henüz Geçmiş Uçuşunuz Bulunmuyor</h3>
+                    <p>Tamamlanan uçuşlarınız burada listelenecektir.</p>
+                    <a href="main.html" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Uçuş Ara
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Uçuş Detayları Modal -->
+    <div class="modal fade" id="flightDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uçuş Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Uçuş Bilgileri</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Uçuş No:</th>
+                                    <td>TK1234</td>
+                                </tr>
+                                <tr>
+                                    <th>Kalkış:</th>
+                                    <td>İstanbul (IST) - 10:30</td>
+                                </tr>
+                                <tr>
+                                    <th>Varış:</th>
+                                    <td>Antalya (AYT) - 12:15</td>
+                                </tr>
+                                <tr>
+                                    <th>Tarih:</th>
+                                    <td>15.06.2023</td>
+                                </tr>
+                                <tr>
+                                    <th>Süre:</th>
+                                    <td>1s 45d</td>
+                                </tr>
+                                <tr>
+                                    <th>Uçuş Tipi:</th>
+                                    <td>Direkt Uçuş</td>
+                                </tr>
+                                <tr>
+                                    <th>Durum:</th>
+                                    <td><span class="flight-status status-completed">Tamamlandı</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Yolcu Bilgileri</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Ad Soyad:</th>
+                                    <td>Sadık Atilla</td>
+                                </tr>
+                                <tr>
+                                    <th>PNR:</th>
+                                    <td>ABC123</td>
+                                </tr>
+                                <tr>
+                                    <th>Rezervasyon Tarihi:</th>
+                                    <td>15.05.2023</td>
+                                </tr>
+                                <tr>
+                                    <th>Sınıf:</th>
+                                    <td>Ekonomi</td>
+                                </tr>
+                                <tr>
+                                    <th>Koltuk:</th>
+                                    <td>12A</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Ödeme Bilgileri</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Toplam Tutar:</th>
+                                    <td>450 TL</td>
+                                </tr>
+                                <tr>
+                                    <th>Ödeme Yöntemi:</th>
+                                    <td>Kredi Kartı (**** **** **** 1234)</td>
+                                </tr>
+                                <tr>
+                                    <th>Ödeme Tarihi:</th>
+                                    <td>15.05.2023</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Uçuş İstatistikleri</h6>
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <div class="stat-value">4.8</div>
+                                    <div class="stat-label">Puan</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-value">1,050 km</div>
+                                    <div class="stat-label">Mesafe</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-value">0 dk</div>
+                                    <div class="stat-label">Gecikme</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i> Yazdır
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Değerlendirme Ekleme Modal -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uçuş Değerlendirmesi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Puan</label>
+                            <div class="rating">
+                                <input type="radio" name="rating" value="5" id="rating-5">
+                                <label for="rating-5"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="4" id="rating-4">
+                                <label for="rating-4"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="3" id="rating-3">
+                                <label for="rating-3"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="2" id="rating-2">
+                                <label for="rating-2"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="1" id="rating-1">
+                                <label for="rating-1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="reviewTitle" class="form-label">Başlık</label>
+                            <input type="text" class="form-control" id="reviewTitle" placeholder="Değerlendirmenize bir başlık ekleyin">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="reviewContent" class="form-label">Değerlendirme</label>
+                            <textarea class="form-control" id="reviewContent" rows="4" placeholder="Uçuşunuz hakkında düşüncelerinizi paylaşın"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Kategoriler</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="categoryPunctuality">
+                                        <label class="form-check-label" for="categoryPunctuality">Zamanında Kalkış</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="categoryService">
+                                        <label class="form-check-label" for="categoryService">Personel Hizmeti</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="categoryComfort">
+                                        <label class="form-check-label" for="categoryComfort">Konfor</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="categoryFood">
+                                        <label class="form-check-label" for="categoryFood">Yemek</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary">Gönder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Değerlendirme Düzenleme Modal -->
+    <div class="modal fade" id="editReviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Değerlendirme Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Puan</label>
+                            <div class="rating">
+                                <input type="radio" name="editRating" value="5" id="editRating-5" checked>
+                                <label for="editRating-5"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" value="4" id="editRating-4">
+                                <label for="editRating-4"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" value="3" id="editRating-3">
+                                <label for="editRating-3"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" value="2" id="editRating-2">
+                                <label for="editRating-2"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" value="1" id="editRating-1">
+                                <label for="editRating-1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editReviewTitle" class="form-label">Başlık</label>
+                            <input type="text" class="form-control" id="editReviewTitle" value="Güzel bir uçuş deneyimi">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editReviewContent" class="form-label">Değerlendirme</label>
+                            <textarea class="form-control" id="editReviewContent" rows="4">"Uçuş zamanında gerçekleşti, personel çok ilgiliydi. Yemek servisi biraz geç yapıldı ama genel olarak memnun kaldım."</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Kategoriler</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="editCategoryPunctuality" checked>
+                                        <label class="form-check-label" for="editCategoryPunctuality">Zamanında Kalkış</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="editCategoryService" checked>
+                                        <label class="form-check-label" for="editCategoryService">Personel Hizmeti</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="editCategoryComfort" checked>
+                                        <label class="form-check-label" for="editCategoryComfort">Konfor</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="editCategoryFood">
+                                        <label class="form-check-label" for="editCategoryFood">Yemek</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger me-2">Sil</button>
+                    <button type="button" class="btn btn-primary">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER BÖLÜMÜ -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5>BiletAl</h5>
+                    <p>En uygun uçak biletlerini karşılaştır, rezervasyon yap ve seyahat et!</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Bilgi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">Kariyer</a></li>
+                        <li><a href="#">İletişim</a></li>
+                        <li><a href="#">Sıkça Sorulan Sorular</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Yardım</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Rezervasyon Rehberi</a></li>
+                        <li><a href="#">İptal ve İade</a></li>
+                        <li><a href="#">Hizmet Şartları</a></li>
+                        <li><a href="#">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Merkez/Isparta</li>
+                        <li><i class="fas fa-phone"></i> +90 505 970 99 03</li>
+                        <li><i class="fas fa-envelope"></i> sadikatilla99@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 BiletAl. Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Dosyaları -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Uçuş filtreleme işlevi
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearFilter = document.getElementById('yearFilter');
+            const monthFilter = document.getElementById('monthFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const searchFlight = document.getElementById('searchFlight');
+            const flightsList = document.getElementById('flightsList');
+            const emptyFlights = document.getElementById('emptyFlights');
+            
+            // Filtreleme fonksiyonu
+            function filterFlights() {
+                const year = yearFilter.value;
+                const month = monthFilter.value;
+                const status = statusFilter.value;
+                const search = searchFlight.value.toLowerCase();
+                
+                const flights = document.querySelectorAll('.flight-history-card');
+                let visibleCount = 0;
+                
+                flights.forEach(flight => {
+                    const flightStatus = flight.querySelector('.flight-status').textContent;
+                    const flightPNR = flight.querySelector('.flight-history-header h5').textContent;
+                    const flightDate = flight.querySelector('.flight-time small').textContent;
+                    const flightDateObj = new Date(flightDate);
+                    
+                    let yearMatch = year === 'all' || flightDateObj.getFullYear().toString() === year;
+                    let monthMatch = month === 'all' || (flightDateObj.getMonth() + 1).toString() === month;
+                    let statusMatch = status === 'all' || 
+                        (status === 'completed' && flightStatus === 'Tamamlandı') ||
+                        (status === 'delayed' && flightStatus === 'Gecikmeli') ||
+                        (status === 'cancelled' && flightStatus === 'İptal Edildi');
+                    
+                    let searchMatch = search === '' || 
+                        flightPNR.toLowerCase().includes(search) || 
+                        flight.querySelector('.flight-details p').textContent.toLowerCase().includes(search);
+                    
+                    if (yearMatch && monthMatch && statusMatch && searchMatch) {
+                        flight.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        flight.style.display = 'none';
+                    }
+                });
+                
+                // Boş durum kontrolü
+                if (visibleCount === 0) {
+                    flightsList.style.display = 'none';
+                    emptyFlights.style.display = 'block';
+                } else {
+                    flightsList.style.display = 'block';
+                    emptyFlights.style.display = 'none';
+                }
+            }
+            
+            // Filtre değişikliklerini dinle
+            yearFilter.addEventListener('change', filterFlights);
+            monthFilter.addEventListener('change', filterFlights);
+            statusFilter.addEventListener('change', filterFlights);
+            searchFlight.addEventListener('input', filterFlights);
+            
+            // Yıldız derecelendirme sistemi
+            const ratingInputs = document.querySelectorAll('.rating input');
+            ratingInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const rating = this.value;
+                    const stars = this.closest('.rating').querySelectorAll('label');
+                    
+                    stars.forEach((star, index) => {
+                        if (index < rating) {
+                            star.classList.add('active');
+                        } else {
+                            star.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

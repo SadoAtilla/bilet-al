@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biletlerim - BiletAl</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Biletlerim sayfası için özel stiller */
+        .ticket-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .ticket-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ticket-body {
+            padding: 20px;
+        }
+        
+        .ticket-footer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .flight-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .flight-time {
+            text-align: center;
+        }
+        
+        .flight-path {
+            flex-grow: 1;
+            position: relative;
+            margin: 0 20px;
+        }
+        
+        .flight-path::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #dee2e6;
+            z-index: 1;
+        }
+        
+        .flight-path::after {
+            content: '\f072';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            color: #007bff;
+            padding: 0 10px;
+            z-index: 2;
+        }
+        
+        .ticket-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-completed {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .ticket-actions .btn {
+            margin-left: 10px;
+        }
+        
+        .ticket-qr {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .ticket-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .ticket-details .row {
+            margin-bottom: 10px;
+        }
+        
+        .ticket-details .col-md-6 {
+            margin-bottom: 10px;
+        }
+        
+        .ticket-details label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .ticket-details p {
+            margin-bottom: 0;
+        }
+        
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .empty-tickets {
+            text-align: center;
+            padding: 50px 0;
+        }
+        
+        .empty-tickets i {
+            font-size: 5rem;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+        
+        .empty-tickets h3 {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .empty-tickets p {
+            color: #6c757d;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER BÖLÜMÜ -->
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="main.html">BiletAl</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="main.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="favorites.html"><i class="far fa-heart"></i> Favoriler</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="tickets.html"><i class="fas fa-ticket-alt"></i> Biletlerim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="past-flights.html"><i class="fas fa-history"></i> Geçmiş Uçuşlarım</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Profilim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ANA İÇERİK -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Biletlerim</h1>
+                
+                <!-- Filtre Bölümü -->
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="statusFilter" class="form-label">Durum</label>
+                            <select class="form-select" id="statusFilter">
+                                <option value="all" selected>Tümü</option>
+                                <option value="active">Aktif</option>
+                                <option value="completed">Tamamlanmış</option>
+                                <option value="cancelled">İptal Edilmiş</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="dateFilter" class="form-label">Tarih</label>
+                            <select class="form-select" id="dateFilter">
+                                <option value="all" selected>Tümü</option>
+                                <option value="upcoming">Yaklaşan</option>
+                                <option value="past">Geçmiş</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="searchTicket" class="form-label">Bilet Ara</label>
+                            <input type="text" class="form-control" id="searchTicket" placeholder="PNR veya uçuş numarası">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Biletler Listesi -->
+                <div id="ticketsList">
+                    <!-- Örnek Bilet 1 -->
+                    <div class="ticket-card">
+                        <div class="ticket-header">
+                            <div>
+                                <h5 class="mb-0">PNR: ABC123</h5>
+                                <small>Rezervasyon Tarihi: 15.05.2023</small>
+                            </div>
+                            <span class="ticket-status status-active">Aktif</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="flight-info">
+                                <div class="flight-time">
+                                    <h5>10:30</h5>
+                                    <p>İstanbul (IST)</p>
+                                    <small>15.06.2023</small>
+                                </div>
+                                <div class="flight-path">
+                                    <div class="d-flex justify-content-between">
+                                        <small>1s 45d</small>
+                                        <small>Direkt Uçuş</small>
+                                    </div>
+                                </div>
+                                <div class="flight-time">
+                                    <h5>12:15</h5>
+                                    <p>Antalya (AYT)</p>
+                                    <small>15.06.2023</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ticket-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Yolcu:</label>
+                                        <p>Ahmet Yılmaz</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Uçuş No:</label>
+                                        <p>TK1234</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Sınıf:</label>
+                                        <p>Ekonomi</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Koltuk:</label>
+                                        <p>12A</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=ABC123" alt="Bilet QR Kodu" class="ticket-qr">
+                                <p class="mt-2 small">Bilet QR Kodu</p>
+                            </div>
+                        </div>
+                        <div class="ticket-footer">
+                            <div>
+                                <span class="fw-bold">Toplam: 450 TL</span>
+                            </div>
+                            <div class="ticket-actions">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ticketDetailsModal">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#refundModal">
+                                    <i class="fas fa-undo"></i> İade Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Örnek Bilet 2 -->
+                    <div class="ticket-card">
+                        <div class="ticket-header">
+                            <div>
+                                <h5 class="mb-0">PNR: XYZ789</h5>
+                                <small>Rezervasyon Tarihi: 10.05.2023</small>
+                            </div>
+                            <span class="ticket-status status-active">Aktif</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="flight-info">
+                                <div class="flight-time">
+                                    <h5>14:45</h5>
+                                    <p>İstanbul (IST)</p>
+                                    <small>20.06.2023</small>
+                                </div>
+                                <div class="flight-path">
+                                    <div class="d-flex justify-content-between">
+                                        <small>3s 20d</small>
+                                        <small>1 Durak</small>
+                                    </div>
+                                </div>
+                                <div class="flight-time">
+                                    <h5>18:05</h5>
+                                    <p>Londra (LHR)</p>
+                                    <small>20.06.2023</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ticket-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Yolcu:</label>
+                                        <p>Ayşe Demir</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Uçuş No:</label>
+                                        <p>TK1980</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Sınıf:</label>
+                                        <p>Business</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Koltuk:</label>
+                                        <p>5C</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=XYZ789" alt="Bilet QR Kodu" class="ticket-qr">
+                                <p class="mt-2 small">Bilet QR Kodu</p>
+                            </div>
+                        </div>
+                        <div class="ticket-footer">
+                            <div>
+                                <span class="fw-bold">Toplam: 1250 TL</span>
+                            </div>
+                            <div class="ticket-actions">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ticketDetailsModal">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#refundModal">
+                                    <i class="fas fa-undo"></i> İade Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Örnek Bilet 3 (İptal Edilmiş) -->
+                    <div class="ticket-card">
+                        <div class="ticket-header">
+                            <div>
+                                <h5 class="mb-0">PNR: DEF456</h5>
+                                <small>Rezervasyon Tarihi: 05.05.2023</small>
+                            </div>
+                            <span class="ticket-status status-cancelled">İptal Edildi</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="flight-info">
+                                <div class="flight-time">
+                                    <h5>09:15</h5>
+                                    <p>İstanbul (IST)</p>
+                                    <small>12.06.2023</small>
+                                </div>
+                                <div class="flight-path">
+                                    <div class="d-flex justify-content-between">
+                                        <small>1s 30d</small>
+                                        <small>Direkt Uçuş</small>
+                                    </div>
+                                </div>
+                                <div class="flight-time">
+                                    <h5>10:45</h5>
+                                    <p>İzmir (ADB)</p>
+                                    <small>12.06.2023</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ticket-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Yolcu:</label>
+                                        <p>Mehmet Kaya</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Uçuş No:</label>
+                                        <p>TK2345</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Sınıf:</label>
+                                        <p>Ekonomi</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Koltuk:</label>
+                                        <p>18B</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle"></i> Bu bilet 08.06.2023 tarihinde iptal edilmiştir. İade işlemi 3-5 iş günü içinde tamamlanacaktır.
+                            </div>
+                        </div>
+                        <div class="ticket-footer">
+                            <div>
+                                <span class="fw-bold">Toplam: 350 TL</span>
+                            </div>
+                            <div class="ticket-actions">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ticketDetailsModal">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Boş Bilet Durumu (Gizli) -->
+                <div id="emptyTickets" class="empty-tickets" style="display: none;">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>Henüz Biletiniz Bulunmuyor</h3>
+                    <p>Aktif veya geçmiş biletleriniz burada listelenecektir.</p>
+                    <a href="main.html" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Uçuş Ara
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bilet Detayları Modal -->
+    <div class="modal fade" id="ticketDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bilet Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Uçuş Bilgileri</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Uçuş No:</th>
+                                    <td>TK1234</td>
+                                </tr>
+                                <tr>
+                                    <th>Kalkış:</th>
+                                    <td>İstanbul (IST) - 10:30</td>
+                                </tr>
+                                <tr>
+                                    <th>Varış:</th>
+                                    <td>Antalya (AYT) - 12:15</td>
+                                </tr>
+                                <tr>
+                                    <th>Tarih:</th>
+                                    <td>15.06.2023</td>
+                                </tr>
+                                <tr>
+                                    <th>Süre:</th>
+                                    <td>1s 45d</td>
+                                </tr>
+                                <tr>
+                                    <th>Uçuş Tipi:</th>
+                                    <td>Direkt Uçuş</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Yolcu Bilgileri</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Ad Soyad:</th>
+                                    <td>Ahmet Yılmaz</td>
+                                </tr>
+                                <tr>
+                                    <th>PNR:</th>
+                                    <td>ABC123</td>
+                                </tr>
+                                <tr>
+                                    <th>Rezervasyon Tarihi:</th>
+                                    <td>15.05.2023</td>
+                                </tr>
+                                <tr>
+                                    <th>Sınıf:</th>
+                                    <td>Ekonomi</td>
+                                </tr>
+                                <tr>
+                                    <th>Koltuk:</th>
+                                    <td>12A</td>
+                                </tr>
+                                <tr>
+                                    <th>Durum:</th>
+                                    <td><span class="ticket-status status-active">Aktif</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Ödeme Bilgileri</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Toplam Tutar:</th>
+                                    <td>450 TL</td>
+                                </tr>
+                                <tr>
+                                    <th>Ödeme Yöntemi:</th>
+                                    <td>Kredi Kartı (**** **** **** 1234)</td>
+                                </tr>
+                                <tr>
+                                    <th>Ödeme Tarihi:</th>
+                                    <td>15.05.2023</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ABC123" alt="Bilet QR Kodu" class="ticket-qr">
+                        <p class="mt-2">Bilet QR Kodu</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i> Yazdır
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İade Modal -->
+    <div class="modal fade" id="refundModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bilet İade İşlemi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> Bilet iade işlemi geri alınamaz. Devam etmek istediğinizden emin misiniz?
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">İade Nedeni</label>
+                        <select class="form-select" id="refundReason">
+                            <option value="">Seçiniz</option>
+                            <option value="change">Plan Değişikliği</option>
+                            <option value="emergency">Acil Durum</option>
+                            <option value="found_cheaper">Daha Uygun Fiyat Buldum</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Açıklama</label>
+                        <textarea class="form-control" id="refundDescription" rows="3" placeholder="İade nedeninizi detaylı olarak açıklayınız"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">İade Yöntemi</label>
+                        <select class="form-select" id="refundMethod">
+                            <option value="original">Orijinal Ödeme Yöntemine</option>
+                            <option value="credit">BiletAl Kredisi</option>
+                        </select>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6>İade Bilgileri</h6>
+                        <p class="mb-1">Bilet Tutarı: <strong>450 TL</strong></p>
+                        <p class="mb-1">İade Ücreti: <strong>50 TL</strong></p>
+                        <p class="mb-0">İade Edilecek Tutar: <strong>400 TL</strong></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger" id="confirmRefund">
+                        <i class="fas fa-undo"></i> İade İşlemini Onayla
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER BÖLÜMÜ -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5>BiletAl</h5>
+                    <p>En uygun uçak biletlerini karşılaştır, rezervasyon yap ve seyahat et!</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Bilgi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">Kariyer</a></li>
+                        <li><a href="#">İletişim</a></li>
+                        <li><a href="#">Sıkça Sorulan Sorular</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Yardım</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Rezervasyon Rehberi</a></li>
+                        <li><a href="#">İptal ve İade</a></li>
+                        <li><a href="#">Hizmet Şartları</a></li>
+                        <li><a href="#">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Merkez/Isparta</li>
+                        <li><i class="fas fa-phone"></i> +90 505 970 99 03</li>
+                        <li><i class="fas fa-envelope"></i> sadikatilla99@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 BiletAl. Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Dosyaları -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Bilet filtreleme işlevi
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusFilter = document.getElementById('statusFilter');
+            const dateFilter = document.getElementById('dateFilter');
+            const searchTicket = document.getElementById('searchTicket');
+            const ticketsList = document.getElementById('ticketsList');
+            const emptyTickets = document.getElementById('emptyTickets');
+            
+            // Filtreleme fonksiyonu
+            function filterTickets() {
+                const status = statusFilter.value;
+                const date = dateFilter.value;
+                const search = searchTicket.value.toLowerCase();
+                
+                const tickets = document.querySelectorAll('.ticket-card');
+                let visibleCount = 0;
+                
+                tickets.forEach(ticket => {
+                    const ticketStatus = ticket.querySelector('.ticket-status').textContent;
+                    const ticketPNR = ticket.querySelector('.ticket-header h5').textContent;
+                    const ticketDate = ticket.querySelector('.flight-time small').textContent;
+                    
+                    let statusMatch = status === 'all' || 
+                        (status === 'active' && ticketStatus === 'Aktif') ||
+                        (status === 'completed' && ticketStatus === 'Tamamlandı') ||
+                        (status === 'cancelled' && ticketStatus === 'İptal Edildi');
+                    
+                    let dateMatch = date === 'all' || 
+                        (date === 'upcoming' && new Date(ticketDate) > new Date()) ||
+                        (date === 'past' && new Date(ticketDate) < new Date());
+                    
+                    let searchMatch = search === '' || 
+                        ticketPNR.toLowerCase().includes(search) || 
+                        ticket.querySelector('.ticket-details p').textContent.toLowerCase().includes(search);
+                    
+                    if (statusMatch && dateMatch && searchMatch) {
+                        ticket.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        ticket.style.display = 'none';
+                    }
+                });
+                
+                // Boş durum kontrolü
+                if (visibleCount === 0) {
+                    ticketsList.style.display = 'none';
+                    emptyTickets.style.display = 'block';
+                } else {
+                    ticketsList.style.display = 'block';
+                    emptyTickets.style.display = 'none';
+                }
+            }
+            
+            // Filtre değişikliklerini dinle
+            statusFilter.addEventListener('change', filterTickets);
+            dateFilter.addEventListener('change', filterTickets);
+            searchTicket.addEventListener('input', filterTickets);
+            
+            // İade onay işlemi
+            const confirmRefundBtn = document.getElementById('confirmRefund');
+            if (confirmRefundBtn) {
+                confirmRefundBtn.addEventListener('click', function() {
+                    const reason = document.getElementById('refundReason').value;
+                    const description = document.getElementById('refundDescription').value;
+                    
+                    if (!reason) {
+                        alert('Lütfen iade nedenini seçiniz.');
+                        return;
+                    }
+                    
+                    if (!description) {
+                        alert('Lütfen iade nedeninizi açıklayınız.');
+                        return;
+                    }
+                    
+                    // İade işlemi simülasyonu
+                    alert('İade işleminiz başarıyla alındı. İade tutarı 3-5 iş günü içinde hesabınıza aktarılacaktır.');
+                    
+                    // Modalı kapat
+                    const refundModal = bootstrap.Modal.getInstance(document.getElementById('refundModal'));
+                    refundModal.hide();
+                    
+                    // Bilet durumunu güncelle (gerçek uygulamada AJAX ile yapılır)
+                    const ticketCard = document.querySelector('.ticket-card:not([style*="display: none"])');
+                    if (ticketCard) {
+                        const statusBadge = ticketCard.querySelector('.ticket-status');
+                        statusBadge.textContent = 'İptal Edildi';
+                        statusBadge.classList.remove('status-active');
+                        statusBadge.classList.add('status-cancelled');
+                        
+                        // İade butonunu kaldır
+                        const refundBtn = ticketCard.querySelector('.btn-outline-danger');
+                        if (refundBtn) {
+                            refundBtn.remove();
+                        }
+                        
+                        // İptal mesajı ekle
+                        const ticketBody = ticketCard.querySelector('.ticket-body');
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = 'alert alert-warning mt-3';
+                        alertDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Bu bilet iptal edilmiştir. İade işlemi 3-5 iş günü içinde tamamlanacaktır.';
+                        ticketBody.appendChild(alertDiv);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
