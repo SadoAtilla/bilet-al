@@ -1,4 +1,4 @@
-#Front-End domain adresi: (https://bilet-al-two.vercel.app)
+#Front-End domain adresi: https://bilet-al-two.vercel.app
 
 
 ### Sadık Atilla Frontend
@@ -9,8 +9,8 @@
 4. Favori Ekleme
 5. Rezervasyon Yapma
 6. Yolcu Bilgisi Ekleme
-7.Favorileri Görüntüleme
-8.Favoriden Çıkarma
+7. Favorileri Görüntüleme
+8. Favoriden Çıkarma
 
 ### Eren Altuncu Frontend
 --------------------------------------------------------------------------------------------------------------------------------------------------------
