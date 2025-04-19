@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorilerim - BiletAl</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Favoriler sayfasına özel stiller */
+        .favorite-card {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .favorite-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .favorite-card .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .favorite-card .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .favorite-card .flight-details {
+            padding: 15px;
+        }
+        
+        .favorite-card .airline-logo {
+            max-height: 30px;
+            margin-right: 10px;
+        }
+        
+        .flight-time {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .flight-date, .flight-airport {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .flight-duration {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .flight-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .empty-favorites {
+            padding: 50px 0;
+            text-align: center;
+        }
+        
+        .empty-favorites i {
+            font-size: 5rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER BÖLÜMÜ -->
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="main.html">BiletAl</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Dil Değiştirme -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-globe"></i> Türkçe
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">English</a></li>
+                                <li><a class="dropdown-item" href="#">Deutsch</a></li>
+                                <li><a class="dropdown-item" href="#">Français</a></li>
+                            </ul>
+                        </li>
+                        <!-- Favorileri Görüntüleme - Aktif Durum -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="favorites.html"><i class="fas fa-heart"></i> Favoriler</a>
+                        </li>
+                        <!-- Biletleri Görüntüleme -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="tickets.html"><i class="fas fa-ticket-alt"></i> Biletlerim</a>
+                        </li>
+                        <!-- Kullanıcı Profili -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle"></i> Hesabım
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="profile.html">Profil Bilgilerim</a></li>
+                                <li><a class="dropdown-item" href="favorites.html">Favorilerim</a></li>
+                                <li><a class="dropdown-item" href="tickets.html">Biletlerim</a></li>
+                                <li><a class="dropdown-item" href="past-flights.html">Geçmiş Uçuşlarım</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- FAVORİLER SAYFASI İÇERİĞİ -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-4">Favorilerim</h2>
+                <p class="text-muted">Favori rotalarınızı ve kaydettiğiniz uçuşları buradan yönetebilirsiniz.</p>
+            </div>
+        </div>
+        
+        <!-- Favorileri Filtreleme ve Sıralama -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Filtrele:</span>
+                    <div class="btn-group me-3" role="group">
+                        <button type="button" class="btn btn-outline-secondary active">Tümü</button>
+                        <button type="button" class="btn btn-outline-secondary">Tek Yön</button>
+                        <button type="button" class="btn btn-outline-secondary">Gidiş-Dönüş</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex justify-content-md-end">
+                    <select class="form-select" style="width: auto;">
+                        <option selected>Sıralama</option>
+                        <option value="1">Fiyat (Düşükten Yükseğe)</option>
+                        <option value="2">Fiyat (Yüksekten Düşüğe)</option>
+                        <option value="3">Tarih (Yakından Uzağa)</option>
+                        <option value="4">Tarih (Uzaktan Yakına)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Favori Uçuşlar Listesi -->
+        <div class="row">
+            <!-- Favori Uçuş 1 -->
+            <div class="col-md-6 mb-4">
+                <div class="card favorite-card h-100">
+                    <div class="flight-details">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="pictures/thy.png" alt="Türk Hava Yolları" class="airline-logo">
+                                <span>Türk Hava Yolları</span>
+                            </div>
+                            <span class="badge bg-success">En Ucuz</span>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-5">
+                                <div class="flight-time">07:30</div>
+                                <div class="flight-airport">IST</div>
+                                <div class="flight-date">14 Kas 2023</div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="flight-duration">2s 10d</div>
+                                <div class="flight-line position-relative">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div>Direkt</div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="flight-time">09:40</div>
+                                <div class="flight-airport">AYT</div>
+                                <div class="flight-date">14 Kas 2023</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flight-price">899 TL</div>
+                            <div>
+                                <button class="btn btn-outline-primary btn-sm me-2">Detaylar</button>
+                                <button class="btn btn-primary btn-sm">Seç</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="favorite-btn" onclick="removeFavorite(this, 1)">
+                        <i class="fas fa-heart text-danger"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Favori Uçuş 2 -->
+            <div class="col-md-6 mb-4">
+                <div class="card favorite-card h-100">
+                    <div class="flight-details">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="pictures/pegasus.png" alt="Pegasus" class="airline-logo">
+                                <span>Pegasus</span>
+                            </div>
+                            <span class="badge bg-info">En Hızlı</span>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-5">
+                                <div class="flight-time">14:45</div>
+                                <div class="flight-airport">SAW</div>
+                                <div class="flight-date">20 Ara 2023</div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="flight-duration">1s 45d</div>
+                                <div class="flight-line position-relative">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div>Direkt</div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="flight-time">16:30</div>
+                                <div class="flight-airport">ESB</div>
+                                <div class="flight-date">20 Ara 2023</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flight-price">459 TL</div>
+                            <div>
+                                <button class="btn btn-outline-primary btn-sm me-2">Detaylar</button>
+                                <button class="btn btn-primary btn-sm">Seç</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="favorite-btn" onclick="removeFavorite(this, 2)">
+                        <i class="fas fa-heart text-danger"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Favori Uçuş 3 -->
+            <div class="col-md-6 mb-4">
+                <div class="card favorite-card h-100">
+                    <div class="flight-details">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="pictures/sun.jpeg" alt="SunExpress" class="airline-logo">
+                                <span>SunExpress</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-5">
+                                <div class="flight-time">10:15</div>
+                                <div class="flight-airport">IST</div>
+                                <div class="flight-date">05 Oca 2024</div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="flight-duration">3s 00d</div>
+                                <div class="flight-line position-relative">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div>Direkt</div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="flight-time">13:15</div>
+                                <div class="flight-airport">ADB</div>
+                                <div class="flight-date">05 Oca 2024</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flight-price">749 TL</div>
+                            <div>
+                                <button class="btn btn-outline-primary btn-sm me-2">Detaylar</button>
+                                <button class="btn btn-primary btn-sm">Seç</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="favorite-btn" onclick="removeFavorite(this, 3)">
+                        <i class="fas fa-heart text-danger"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Favori Uçuş 4 (Gidiş-Dönüş) -->
+            <div class="col-md-6 mb-4">
+                <div class="card favorite-card h-100">
+                    <div class="flight-details">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="pictures/thy.png" alt="Türk Hava Yolları" class="airline-logo">
+                                <span>Türk Hava Yolları</span>
+                            </div>
+                            <span class="badge bg-primary">Gidiş-Dönüş</span>
+                        </div>
+                        
+                        <!-- Gidiş Uçuşu -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="small text-muted mb-2">Gidiş</div>
+                            </div>
+                            <div class="col-5">
+                                <div class="flight-time">08:25</div>
+                                <div class="flight-airport">IST</div>
+                                <div class="flight-date">10 Şub 2024</div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="flight-duration">1s 40d</div>
+                                <div class="flight-line position-relative">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div>Direkt</div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="flight-time">10:05</div>
+                                <div class="flight-airport">BJV</div>
+                                <div class="flight-date">10 Şub 2024</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dönüş Uçuşu -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="small text-muted mb-2">Dönüş</div>
+                            </div>
+                            <div class="col-5">
+                                <div class="flight-time">17:40</div>
+                                <div class="flight-airport">BJV</div>
+                                <div class="flight-date">17 Şub 2024</div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="flight-duration">1s 35d</div>
+                                <div class="flight-line position-relative">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div>Direkt</div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="flight-time">19:15</div>
+                                <div class="flight-airport">IST</div>
+                                <div class="flight-date">17 Şub 2024</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flight-price">1.599 TL</div>
+                            <div>
+                                <button class="btn btn-outline-primary btn-sm me-2">Detaylar</button>
+                                <button class="btn btn-primary btn-sm">Seç</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="favorite-btn" onclick="removeFavorite(this, 4)">
+                        <i class="fas fa-heart text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Boş Favoriler Durumu (normalde gizli, favoriler boşsa gösterilir) -->
+        <div class="row d-none" id="emptyFavorites">
+            <div class="col-12">
+                <div class="empty-favorites">
+                    <i class="far fa-heart"></i>
+                    <h3>Henüz favorileriniz yok</h3>
+                    <p class="text-muted">Uçuş arama sonuçlarında beğendiğiniz rotaları kalp simgesine tıklayarak favorilerinize ekleyebilirsiniz.</p>
+                    <a href="main.html" class="btn btn-primary mt-3">Uçuşları Keşfedin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER BÖLÜMÜ -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5>BiletAl</h5>
+                    <p>En uygun uçak biletlerini karşılaştır, rezervasyon yap ve seyahat et!</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Bilgi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">Kariyer</a></li>
+                        <li><a href="#">İletişim</a></li>
+                        <li><a href="#">Sıkça Sorulan Sorular</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Yardım</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Rezervasyon Rehberi</a></li>
+                        <li><a href="#">İptal ve İade</a></li>
+                        <li><a href="#">Hizmet Şartları</a></li>
+                        <li><a href="#">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Merkez/Isparta</li>
+                        <li><i class="fas fa-phone"></i> +90 505 970 99 03</li>
+                        <li><i class="fas fa-envelope"></i> sadikatilla99@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 BiletAl. Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Dosyaları -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Favorilerden çıkarma fonksiyonu
+        function removeFavorite(element, id) {
+            // Konfirmasyon sorgusu
+            if (confirm('Bu uçuşu favorilerinizden çıkarmak istediğinize emin misiniz?')) {
+                // Kart elementini seç
+                const card = element.closest('.favorite-card').parentElement;
+                
+                // Animasyon ile kartı kaldır
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.8)';
+                
+                setTimeout(() => {
+                    card.remove();
+                    
+                    // API çağrısı - favoriden çıkarma
+                    // fetch('/api/favorites/remove/' + id, { method: 'DELETE' });
+                    
+                    // Favoriler boşsa boş durumu göster
+                    const remainingCards = document.querySelectorAll('.favorite-card');
+                    if (remainingCards.length === 0) {
+                        document.getElementById('emptyFavorites').classList.remove('d-none');
+                    }
+                    
+                    // Bildirim göster
+                    showAlert('Uçuş favorilerinizden çıkarıldı', 'info');
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html> 

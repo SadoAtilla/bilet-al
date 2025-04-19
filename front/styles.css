@@ -1,0 +1,539 @@
+/* GENEL STILLER */
+:root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --accent-color: #5c80bc;
+    --dark-color: #2d3142;
+    --light-color: #f7f7f7;
+    --price-color: #ff6b6b;
+    --gradient-primary: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+    --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #fff;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: var(--accent-color);
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+/* HEADER STİLLERİ */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar {
+    padding: 15px 0;
+}
+
+.navbar-brand {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    position: relative;
+}
+
+.navbar-brand::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    bottom: 5px;
+    right: -10px;
+}
+
+.nav-link {
+    color: var(--dark-color);
+    font-weight: 500;
+    margin: 0 10px;
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.nav-link i {
+    margin-right: 5px;
+}
+
+/* HERO BÖLÜMÜ */
+.hero {
+    background: url('https://source.unsplash.com/random/1600x900/?travel') no-repeat center center/cover;
+    height: 85vh;
+    position: relative;
+    color: #fff;
+    padding: 50px 0;
+    display: flex;
+    align-items: center;
+    animation: fadeIn 1s ease-in;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+.hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: slideUp 1s ease-in-out;
+}
+
+.search-box {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--box-shadow);
+    color: #333;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* ARAMA FORMU STİLLERİ */
+.nav-tabs {
+    border-bottom: none;
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #eee;
+    color: #666;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.nav-tabs .nav-link.active {
+    background: var(--gradient-primary);
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.tab-content {
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 12px 15px;
+    transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(92, 128, 188, 0.1);
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+    color: #555;
+}
+
+.search-btn {
+    background: var(--gradient-primary);
+    border: none;
+    padding: 12px 25px;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: var(--transition);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+    margin-top: 20px;
+}
+
+.search-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+.flight-leg {
+    background-color: #f9f9f9;
+    transition: var(--transition);
+}
+
+.flight-leg:hover {
+    background-color: #f0f0f0;
+}
+
+/* POPÜLER ROTALAR */
+.popular-routes {
+    padding: 80px 0;
+}
+
+.route-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.route-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.route-card img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.route-card .card-body {
+    padding: 20px;
+}
+
+.route-card .card-title {
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.price {
+    color: var(--price-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.route-card .btn {
+    margin-top: 10px;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 30px;
+    transition: var(--transition);
+}
+
+.route-card .btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* ÖNERİLEN DESTİNASYONLAR */
+.destination-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 200px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.destination-card:hover {
+    transform: scale(1.05);
+}
+
+.destination-card img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.destination-card .card-img-overlay {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.1) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+}
+
+.destination-card .card-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* AVANTAJLAR BÖLÜMÜ */
+.features {
+    background-color: #f9f9f9;
+}
+
+.feature-box {
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    height: 100%;
+    transition: var(--transition);
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.feature-box h3 {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+/* FOOTER STİLLERİ */
+.footer {
+    background-color: var(--dark-color);
+    color: #fff;
+}
+
+.footer h5 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.footer h5::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background-color: var(--primary-color);
+    bottom: -10px;
+    left: 0;
+}
+
+.footer a {
+    color: #ddd;
+    transition: var(--transition);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.footer a:hover {
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.social-icons {
+    margin-top: 20px;
+}
+
+.social-icons a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin-right: 10px;
+    text-align: center;
+    line-height: 40px;
+    transition: var(--transition);
+}
+
+.social-icons a:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-5px);
+}
+
+.contact-info li {
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.contact-info li i {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    color: var(--primary-color);
+}
+
+/* MODAL STİLLERİ */
+.modal-content {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 20px 20px 0 20px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-title {
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+/* RESPONSIVE TASARIM */
+@media (max-width: 992px) {
+    .hero {
+        height: auto;
+        padding: 100px 0;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .search-box {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+    
+    .hero h1 {
+        font-size: 1.7rem;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ANİMASYONLAR */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover Efektleri */
+.btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ff8e8e 0%, #ff6b6b 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+/* Dropdown Menü */
+.dropdown-menu {
+    border: none;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    padding: 10px;
+    margin-top: 15px !important;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.dropdown-item {
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+    color: var(--primary-color);
+}
+
+/* Animasyonlu Elementler */
+.section-title {
+    position: relative;
+    margin-bottom: 50px;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 3px;
+    background: var(--gradient-primary);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Uçuş Arama Butonuna Özel Efekt */
+.search-btn i {
+    margin-right: 10px;
+    transition: var(--transition);
+}
+
+.search-btn:hover i {
+    transform: translateX(3px);
+}
+
+/* Popüler Rotalara Hover Efekti */
+.route-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(255, 142, 142, 0.8) 100%);
+    opacity: 0;
+    transition: var(--transition);
+    z-index: 1;
+    border-radius: 10px;
+}
+
+.route-card:hover::before {
+    opacity: 0.2;
+} 

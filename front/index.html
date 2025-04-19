@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiletAl - Uçak Bileti Karşılaştırma ve Rezervasyon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- HEADER BÖLÜMÜ -->
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="#">BiletAl</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Dil Değiştirme: Websitenin arayüzünün görüntüleneceği dili seçmeyi sağlar -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-globe"></i> Türkçe
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">English</a></li>
+                                <li><a class="dropdown-item" href="#">Deutsch</a></li>
+                                <li><a class="dropdown-item" href="#">Français</a></li>
+                            </ul>
+                        </li>
+                        <!-- Favorileri Görüntüleme: Kullanıcının favorilerine eklediği yolculuk planlarını liste halinde sunar -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="far fa-heart"></i> Favoriler</a>
+                        </li>
+                        <!-- Biletleri Görüntüleme: Kullanıcının satın aldığı aktif biletlere erişimini sağlar -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-ticket-alt"></i> Biletlerim</a>
+                        </li>
+                        <!-- Rezervasyon Yap: Kullanıcının hızlıca rezervasyon yapmasını sağlar -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#reservationModal">
+                                <i class="fas fa-calendar-check"></i> Rezervasyon Yap
+                            </a>
+                        </li>
+                        <!-- Giriş Yap: Belirlenen kullanıcı adı ve şifre ile sisteme giriş yapılan alan -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                            </a>
+                        </li>
+                        <!-- Kayıt Ol: Kullanıcının sisteme kaydolmasını sağlar -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                <i class="fas fa-user-plus"></i> Kayıt Ol
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ANA SAYFA ARKAPLAN VE ARAMA KUTUSU -->
+    <section class="hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 mx-auto">
+                    <div class="search-box">
+                        <h1>En uygun uçak biletlerini karşılaştır ve rezervasyon yap</h1>
+                        
+                        <!-- Arama: Kullanıcının rota, tarih, kişi sayısı seçerek rotaları görüntülemesini sağlar -->
+                        <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="one-way-tab" data-bs-toggle="tab" data-bs-target="#one-way">Tek Yön</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="round-trip-tab" data-bs-toggle="tab" data-bs-target="#round-trip">Gidiş-Dönüş</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="multi-city-tab" data-bs-toggle="tab" data-bs-target="#multi-city">Çoklu Uçuş</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content p-4" id="searchTabContent">
+                            <div class="tab-pane fade show active" id="one-way" role="tabpanel">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-md-5">
+                                            <label>Nereden</label>
+                                            <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label>Nereye</label>
+                                            <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label>Tarih</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Yolcu</label>
+                                            <select class="form-select">
+                                                <option selected>1 Yetişkin</option>
+                                                <option>2 Yetişkin</option>
+                                                <option>1 Yetişkin, 1 Çocuk</option>
+                                                <option>2 Yetişkin, 1 Çocuk</option>
+                                                <option>2 Yetişkin, 2 Çocuk</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Sınıf</label>
+                                            <select class="form-select">
+                                                <option selected>Ekonomi</option>
+                                                <option>Business</option>
+                                                <option>First Class</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary w-100 search-btn">
+                                                <i class="fas fa-search"></i> Uçuş Ara
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="d-flex justify-content-end">
+                                                <div class="form-check form-switch me-3">
+                                                    <input class="form-check-input" type="checkbox" id="sortByPrice">
+                                                    <label class="form-check-label" for="sortByPrice">Fiyata Göre Sırala</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="round-trip" role="tabpanel">
+                                <!-- Gidiş-Dönüş formu içeriği -->
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-md-5">
+                                            <label>Nereden</label>
+                                            <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label>Nereye</label>
+                                            <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Gidiş Tarihi</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Dönüş Tarihi</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Yolcu</label>
+                                            <select class="form-select">
+                                                <option selected>1 Yetişkin</option>
+                                                <option>2 Yetişkin</option>
+                                                <option>1 Yetişkin, 1 Çocuk</option>
+                                                <option>2 Yetişkin, 1 Çocuk</option>
+                                                <option>2 Yetişkin, 2 Çocuk</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Sınıf</label>
+                                            <select class="form-select">
+                                                <option selected>Ekonomi</option>
+                                                <option>Business</option>
+                                                <option>First Class</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-primary w-100 search-btn">
+                                                <i class="fas fa-search"></i> Uçuş Ara
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="d-flex justify-content-end">
+                                                <div class="form-check form-switch me-3">
+                                                    <input class="form-check-input" type="checkbox" id="sortByPriceRoundTrip">
+                                                    <label class="form-check-label" for="sortByPriceRoundTrip">Fiyata Göre Sırala</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="multi-city" role="tabpanel">
+                                <!-- Çoklu Uçuş formu içeriği -->
+                                <form>
+                                    <div class="multi-city-form">
+                                        <div class="flight-leg mb-3 p-3 border rounded">
+                                            <div class="row g-3">
+                                                <div class="col-md-5">
+                                                    <label>Nereden</label>
+                                                    <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label>Nereye</label>
+                                                    <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label>Tarih</label>
+                                                    <input type="date" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flight-leg mb-3 p-3 border rounded">
+                                            <div class="row g-3">
+                                                <div class="col-md-5">
+                                                    <label>Nereden</label>
+                                                    <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label>Nereye</label>
+                                                    <input type="text" class="form-control" placeholder="Havalimanı veya şehir">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label>Tarih</label>
+                                                    <input type="date" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <button type="button" class="btn btn-outline-primary" id="addLegBtn">
+                                                <i class="fas fa-plus"></i> Uçuş Ekle
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="row g-3">
+                                            <div class="col-md-3">
+                                                <label>Yolcu</label>
+                                                <select class="form-select">
+                                                    <option selected>1 Yetişkin</option>
+                                                    <option>2 Yetişkin</option>
+                                                    <option>1 Yetişkin, 1 Çocuk</option>
+                                                    <option>2 Yetişkin, 1 Çocuk</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label>Sınıf</label>
+                                                <select class="form-select">
+                                                    <option selected>Ekonomi</option>
+                                                    <option>Business</option>
+                                                    <option>First Class</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="submit" class="btn btn-primary w-100 mt-4 search-btn">
+                                                    <i class="fas fa-search"></i> Uçuş Ara
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="d-flex justify-content-end">
+                                                <div class="form-check form-switch me-3">
+                                                    <input class="form-check-input" type="checkbox" id="sortByPriceMultiCity">
+                                                    <label class="form-check-label" for="sortByPriceMultiCity">Fiyata Göre Sırala</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- POPÜLER ROTALAR BÖLÜMÜ -->
+    <section class="popular-routes py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Popüler Rotalar</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card route-card">
+                        <img src="pictures/antalya.jpeg" class="card-img-top" alt="İstanbul">
+                        <div class="card-body">
+                            <h5 class="card-title">İstanbul - Antalya</h5>
+                            <p class="card-text">En düşük fiyat: <span class="price">399 TL</span></p>
+                            <a href="#" class="btn btn-outline-primary">Uçuşları Gör</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card route-card">
+                        <img src="pictures/londra.jpeg" class="card-img-top" alt="Londra">
+                        <div class="card-body">
+                            <h5 class="card-title">İstanbul - Londra</h5>
+                            <p class="card-text">En düşük fiyat: <span class="price">1299 TL</span></p>
+                            <a href="#" class="btn btn-outline-primary">Uçuşları Gör</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card route-card">
+                        <img src="pictures/hollanda.jpeg" class="card-img-top" alt="Amsterdam">
+                        <div class="card-body">
+                            <h5 class="card-title">İstanbul - Amsterdam</h5>
+                            <p class="card-text">En düşük fiyat: <span class="price">1499 TL</span></p>
+                            <a href="#" class="btn btn-outline-primary">Uçuşları Gör</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ÖNERİLEN DESTİNASYONLAR -->
+    <section class="featured-destinations py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">Önerilen Destinasyonlar</h2>
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card destination-card">
+                        <img src="pictures/paris.jpeg" class="card-img-top" alt="Paris">
+                        <div class="card-img-overlay">
+                            <h5 class="card-title">Paris</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card destination-card">
+                        <img src="pictures/roma.jpeg" class="card-img-top" alt="Roma">
+                        <div class="card-img-overlay">
+                            <h5 class="card-title">Roma</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card destination-card">
+                        <img src="pictures/newyork.jpeg" class="card-img-top" alt="New York">
+                        <div class="card-img-overlay">
+                            <h5 class="card-title">New York</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card destination-card">
+                        <img src="pictures/tokyo.jpeg" class="card-img-top" alt="Tokyo">
+                        <div class="card-img-overlay">
+                            <h5 class="card-title">Tokyo</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AVANTAJLAR BÖLÜMÜ -->
+    <section class="features py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Neden BiletAl?</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-box">
+                        <i class="fas fa-percentage feature-icon"></i>
+                        <h3>En İyi Fiyat Garantisi</h3>
+                        <p>Yüzlerce havayolu şirketinin en uygun fiyatlı biletlerini karşılaştırıyoruz.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-box">
+                        <i class="fas fa-shield-alt feature-icon"></i>
+                        <h3>Güvenli Ödeme</h3>
+                        <p>Tüm ödemelerinizi güvenle gerçekleştirebilirsiniz.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-box">
+                        <i class="fas fa-headset feature-icon"></i>
+                        <h3>7/24 Müşteri Desteği</h3>
+                        <p>İhtiyacınız olduğunda her zaman yanınızdayız.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODALLER -->
+    <!-- Rezervasyon Yap Modal -->
+    <div class="modal fade" id="reservationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hızlı Rezervasyon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="reservationFrom" class="form-label">Nereden</label>
+                                <input type="text" class="form-control" id="reservationFrom" placeholder="Havalimanı veya şehir">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reservationTo" class="form-label">Nereye</label>
+                                <input type="text" class="form-control" id="reservationTo" placeholder="Havalimanı veya şehir">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reservationDate" class="form-label">Tarih</label>
+                                <input type="date" class="form-control" id="reservationDate">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reservationPassengers" class="form-label">Yolcu Sayısı</label>
+                                <select class="form-select" id="reservationPassengers">
+                                    <option selected>1 Yetişkin</option>
+                                    <option>2 Yetişkin</option>
+                                    <option>1 Yetişkin, 1 Çocuk</option>
+                                    <option>2 Yetişkin, 1 Çocuk</option>
+                                    <option>2 Yetişkin, 2 Çocuk</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="reservationClass" class="form-label">Sınıf</label>
+                                <select class="form-select" id="reservationClass">
+                                    <option selected>Ekonomi</option>
+                                    <option>Business</option>
+                                    <option>First Class</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="reservationFlexible">
+                                    <label class="form-check-label" for="reservationFlexible">
+                                        Esnek tarih seçeneği (3 gün öncesi/sonrası)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary">Uçuşları Göster</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Giriş Yap Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Giriş Yap</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <!-- Şifremi Unuttum: Kullanıcı şifresini unutursa şifresini yenilemesini sağlar -->
+                            <a href="#" class="text-decoration-none">Şifremi Unuttum</a>
+                            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kayıt Ol Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kayıt Ol</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Ad Soyad</label>
+                            <input type="text" class="form-control" id="registerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPhone" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="registerPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPasswordConfirm" class="form-label">Şifre Tekrar</label>
+                            <input type="password" class="form-control" id="registerPasswordConfirm" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="termsConditions" required>
+                            <label class="form-check-label" for="termsConditions">
+                                <a href="#" class="text-decoration-none">Kullanım Şartları</a>'nı okudum ve kabul ediyorum.
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Kayıt Ol</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER BÖLÜMÜ -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5>BiletAl</h5>
+                    <p>En uygun uçak biletlerini karşılaştır, rezervasyon yap ve seyahat et!</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Bilgi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">Kariyer</a></li>
+                        <li><a href="#">İletişim</a></li>
+                        <li><a href="#">Sıkça Sorulan Sorular</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Yardım</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Rezervasyon Rehberi</a></li>
+                        <li><a href="#">İptal ve İade</a></li>
+                        <li><a href="#">Hizmet Şartları</a></li>
+                        <li><a href="#">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Merkez/Isparta</li>
+                        <li><i class="fas fa-phone"></i> +90 505 970 99 03</li>
+                        <li><i class="fas fa-envelope"></i> sadikatilla99@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 BiletAl. Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Dosyaları -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
