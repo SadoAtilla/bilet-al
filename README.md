@@ -21,8 +21,8 @@
 
 ### [3.Durum Senaryoları](Durum-Senaryoları.md)
 
-### [4.Front-End]()
+### [4.Front-End](Front-End.md)
 
 ### [5.Back-End]()
 
-### [6.Video Sunum](dokümantasyon.md)
+### [6.Video Sunum]()
