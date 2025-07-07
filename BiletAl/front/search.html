@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uçuş Arama Sonuçları - BiletAl</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .flight-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .flight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .airline-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+        
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .filters {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .sort-btn {
+            margin: 5px;
+        }
+        
+        .flight-time {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .flight-duration {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .stops {
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-primary text-white py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-0">BiletAl</h1>
+                </div>
+                <div class="col-md-6 text-end">
+                    <nav>
+                        <a href="index.html" class="text-white me-3">Ana Sayfa</a>
+                        <a href="tickets.html" class="text-white me-3">Biletlerim</a>
+                        <a href="past-flights.html" class="text-white me-3">Geçmiş Uçuşlar</a>
+                        <a href="profile.html" class="text-white">Profil</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <!-- Search Summary -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="h4">Uçuş Arama Sonuçları</h2>
+                <p class="text-muted" id="searchSummary"></p>
+            </div>
+        </div>
+
+        <!-- Filters and Sort -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="filters">
+                    <h5 class="mb-3">Filtreler</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Airlines</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="turkish" id="turkishAirlines">
+                            <label class="form-check-label" for="turkishAirlines">Turkish Airlines</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="pegasus" id="pegasus">
+                            <label class="form-check-label" for="pegasus">Pegasus</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Uçuş Süresi</label>
+                        <select class="form-select" id="durationFilter">
+                            <option value="">Tümü</option>
+                            <option value="0-2">0-2 saat</option>
+                            <option value="2-4">2-4 saat</option>
+                            <option value="4+">4+ saat</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Aktarma</label>
+                        <select class="form-select" id="stopsFilter">
+                            <option value="">Tümü</option>
+                            <option value="0">Direkt</option>
+                            <option value="1">1 Aktarma</option>
+                            <option value="2">2+ Aktarma</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Sırala</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Fiyata Göre</label>
+                            <select class="form-select" id="priceSort">
+                                <option value="asc">Artan Fiyat</option>
+                                <option value="desc">Azalan Fiyat</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Süreye Göre</label>
+                            <select class="form-select" id="durationSort">
+                                <option value="asc">Artan Süre</option>
+                                <option value="desc">Azalan Süre</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <button class="btn btn-outline-primary sort-btn" data-sort="price">Fiyata Göre Sırala</button>
+                        <button class="btn btn-outline-primary sort-btn" data-sort="duration">Süreye Göre Sırala</button>
+                    </div>
+                    <div>
+                        <span class="text-muted" id="resultCount"></span>
+                    </div>
+                </div>
+                
+                <!-- Flight Results -->
+                <div id="flightResults">
+                    <!-- Flight cards will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div class="modal fade" id="reservationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rezervasyon Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="reservationDetails"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" id="confirmReservation">Onayla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/language.js"></script>
+    <script>
+        // URL'den arama parametrelerini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParams = {
+            from: urlParams.get('from'),
+            to: urlParams.get('to'),
+            depart: urlParams.get('depart'),
+            return: urlParams.get('return'),
+            passengers: urlParams.get('passengers'),
+            class: urlParams.get('class')
+        };
+
+        // Arama özetini güncelle
+        document.getElementById('searchSummary').textContent = 
+            `${searchParams.from} - ${searchParams.to} | ${searchParams.depart} | ${searchParams.passengers} Yolcu | ${searchParams.class} Sınıf`;
+
+        // Uçuş verileri backend'den yüklenecek
+        let flights = [];
+
+        // Uçuş kartlarını oluştur
+        function createFlightCards(flights) {
+            const container = document.getElementById('flightResults');
+            container.innerHTML = '';
+            
+            flights.forEach(flight => {
+                const card = document.createElement('div');
+                card.className = 'card flight-card';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="${flight.logo}" alt="${flight.airline}" class="airline-logo">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="flight-time">${flight.departure} - ${flight.arrival}</div>
+                                <div class="flight-duration">${flight.duration}</div>
+                                <span class="stops">${flight.stops} Aktarma</span>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted">${flight.airline}</div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="price">₺${flight.price}</div>
+                                <button class="btn btn-primary mt-2" onclick="showReservationModal('${flight.airline}', ${flight.price})">
+                                    Seç
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            document.getElementById('resultCount').textContent = `${flights.length} uçuş bulundu`;
+        }
+
+        // Rezervasyon modalını göster
+        function showReservationModal(airline, price) {
+            const modal = new bootstrap.Modal(document.getElementById('reservationModal'));
+            document.getElementById('reservationDetails').innerHTML = `
+                <div class="text-center mb-4">
+                    <h4>${airline}</h4>
+                    <p class="text-muted">${searchParams.from} - ${searchParams.to}</p>
+                    <p class="text-muted">${searchParams.depart}</p>
+                    <h5 class="text-success">₺${price}</h5>
+                </div>
+            `;
+            modal.show();
+        }
+
+        // Sıralama işlemleri
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sortBy = btn.dataset.sort;
+                const sortedFlights = [...flights].sort((a, b) => {
+                    if (sortBy === 'price') return a.price - b.price;
+                    if (sortBy === 'duration') return a.duration.localeCompare(b.duration);
+                });
+                createFlightCards(sortedFlights);
+            });
+        });
+
+        // Filtre işlemleri
+        document.getElementById('durationFilter').addEventListener('change', applyFilters);
+        document.getElementById('stopsFilter').addEventListener('change', applyFilters);
+        
+        function applyFilters() {
+            const durationFilter = document.getElementById('durationFilter').value;
+            const stopsFilter = document.getElementById('stopsFilter').value;
+            
+            let filteredFlights = flights.filter(flight => {
+                if (durationFilter && !flight.duration.includes(durationFilter)) return false;
+                if (stopsFilter && flight.stops !== parseInt(stopsFilter)) return false;
+                return true;
+            });
+            
+            createFlightCards(filteredFlights);
+        }
+
+        // Sıralama fonksiyonları
+        function sortFlights() {
+            const priceSort = document.getElementById('priceSort').value;
+            const durationSort = document.getElementById('durationSort').value;
+            
+            let sortedFlights = [...flights];
+            
+            if (priceSort) {
+                sortedFlights.sort((a, b) => {
+                    return priceSort === 'asc' ? a.price - b.price : b.price - a.price;
+                });
+            }
+            
+            if (durationSort) {
+                sortedFlights.sort((a, b) => {
+                    return durationSort === 'asc' ? a.duration - b.duration : b.duration - a.duration;
+                });
+            }
+            
+            createFlightCards(sortedFlights);
+        }
+
+        // Event listener'ları ekle
+        document.getElementById('priceSort').addEventListener('change', sortFlights);
+        document.getElementById('durationSort').addEventListener('change', sortFlights);
+
+        // Sayfa yüklendiğinde backend'den uçuş verilerini yükle
+        async function loadFlights() {
+            try {
+                const response = await api.searchFlights(searchParams);
+                if (response.success) {
+                    flights = response.data.flights;
+        createFlightCards(flights);
+                } else {
+                    createFlightCards([]);
+                }
+            } catch (error) {
+                console.error('Uçuş yükleme hatası:', error);
+                createFlightCards([]);
+            }
+        }
+
+        // Sayfa yüklendiğinde navbar'ı güncelle ve uçuşları yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbar();
+            loadFlights();
+        });
+    </script>
+</body>
+</html> 

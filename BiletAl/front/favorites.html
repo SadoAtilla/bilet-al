@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiletAl - Favorilerim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .favorite-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .favorite-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .favorite-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .favorite-card .airline-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .favorite-card .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .empty-favorites {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+
+        .empty-favorites i {
+            font-size: 4rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-plane-departure text-primary"></i> BiletAl
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="favorites.html">Favorilerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tickets.html">Biletlerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="past-flights.html">Geçmiş Uçuşlar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Profilim</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="login.html" class="btn btn-outline-primary me-2">Giriş Yap</a>
+                    <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Favori Uçuşlarım</h2>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="airlineFilter" class="form-label">Havayolu</label>
+                    <select class="form-select" id="airlineFilter">
+                        <option value="">Tümü</option>
+                        <option value="turkish">Türk Hava Yolları</option>
+                        <option value="pegasus">Pegasus</option>
+                        <option value="sunexpress">SunExpress</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="priceFilter" class="form-label">Fiyat Aralığı</label>
+                    <select class="form-select" id="priceFilter">
+                        <option value="">Tümü</option>
+                        <option value="0-1000">0 - 1.000 TL</option>
+                        <option value="1000-2000">1.000 - 2.000 TL</option>
+                        <option value="2000+">2.000 TL ve üzeri</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="searchInput" class="form-label">Arama</label>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Uçuş numarası veya şehir...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorite Flights -->
+        <div class="row" id="favoriteFlights">
+            <!-- Favoriler dinamik olarak yüklenecek -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-favorites" id="emptyFavorites">
+            <i class="fas fa-heart-broken"></i>
+            <h3>Henüz favori uçuşunuz yok</h3>
+            <p class="text-muted">Favori uçuşlarınızı burada görebilirsiniz.</p>
+            <a href="index.html" class="btn btn-primary mt-3">Uçuş Ara</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 BiletAl. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Filter favorites based on airline
+        document.getElementById('airlineFilter').addEventListener('change', filterFavorites);
+        
+        // Filter favorites based on price range
+        document.getElementById('priceFilter').addEventListener('change', filterFavorites);
+        
+        // Filter favorites based on search input
+        document.getElementById('searchInput').addEventListener('input', filterFavorites);
+
+        function filterFavorites() {
+            const airline = document.getElementById('airlineFilter').value.toLowerCase();
+            const priceRange = document.getElementById('priceFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            const cards = document.querySelectorAll('.favorite-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const cardAirline = card.querySelector('.airline-logo').alt.toLowerCase();
+                const cardPrice = parseInt(card.querySelector('.price').textContent);
+                const cardText = card.textContent.toLowerCase();
+                
+                let show = true;
+                
+                if (airline && !cardAirline.includes(airline)) show = false;
+                if (priceRange) {
+                    const [min, max] = priceRange.split('-').map(Number);
+                    if (max && (cardPrice < min || cardPrice > max)) show = false;
+                    if (!max && cardPrice < min) show = false;
+                }
+                if (search && !cardText.includes(search)) show = false;
+                
+                card.closest('.col-md-6').style.display = show ? 'block' : 'none';
+                if (show) visibleCount++;
+            });
+            
+            document.getElementById('emptyFavorites').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        async function removeFavorite(button) {
+            try {
+                if (confirm('Bu uçuşu favorilerinizden kaldırmak istediğinize emin misiniz?')) {
+                    const card = button.closest('.col-md-6');
+                    const favoriteId = card.getAttribute('data-favorite-id');
+                    if (!favoriteId) {
+                        alert('Favori bilgisi bulunamadı');
+                        return;
+                    }
+                    const response = await api.removeFromFavorites(favoriteId);
+                    if (response.success) {
+                        card.remove();
+                        filterFavorites();
+                        alert('Uçuş favorilerden kaldırıldı!');
+                    } else {
+                        alert('Favori kaldırma başarısız: ' + response.message);
+                    }
+                }
+            } catch (error) {
+                alert('Favori kaldırma hatası: ' + error.message);
+            }
+        }
+
+        // Check if there are any favorites on page load and update navbar
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateNavbar();
+            try {
+                const response = await api.getFavorites();
+                const favorites = response.data.favorites || [];
+                const container = document.getElementById('favoriteFlights');
+                container.innerHTML = '';
+                if (favorites.length === 0) {
+                    document.getElementById('emptyFavorites').style.display = 'block';
+                } else {
+                    document.getElementById('emptyFavorites').style.display = 'none';
+                    favorites.forEach(fav => {
+                        if (!fav.flight) {
+                            console.error('Favori uçuşun flight alanı boş:', fav);
+                            return;
+                        }
+                        const departure = fav.flight.departure && fav.flight.departure.city ? fav.flight.departure.city : '-';
+                        const arrival = fav.flight.arrival && fav.flight.arrival.city ? fav.flight.arrival.city : '-';
+                        const price = fav.flight.price && fav.flight.price.economy ? fav.flight.price.economy + ' TL' : '-';
+                        const card = document.createElement('div');
+                        card.className = 'col-md-6';
+                        card.setAttribute('data-favorite-id', fav._id);
+                        card.innerHTML = `
+                          <div class="card favorite-card mb-4">
+                            <div class="card-body">
+                              <h5>${departure} → ${arrival}</h5>
+                              <p class="price">${price}</p>
+                              <button class="btn btn-danger" onclick="removeFavorite(this)">Favoriden Çıkar</button>
+                            </div>
+                          </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                document.getElementById('emptyFavorites').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 
